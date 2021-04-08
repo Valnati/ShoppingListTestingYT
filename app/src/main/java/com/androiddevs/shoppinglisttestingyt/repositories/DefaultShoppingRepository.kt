@@ -46,7 +46,7 @@ class DefaultShoppingRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Resource.error("Couldn't reach server. Check internet connection", null)
-
+            //random comment for commit test
         }
     }
 }
