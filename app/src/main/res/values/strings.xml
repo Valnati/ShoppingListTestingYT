@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ShoppingListTestingYT</string>
+    <string name="fab_add_item">add Item</string>
 </resources>
