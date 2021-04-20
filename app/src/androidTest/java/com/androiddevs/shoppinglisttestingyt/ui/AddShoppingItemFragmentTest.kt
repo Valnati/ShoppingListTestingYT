@@ -4,14 +4,17 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import com.androiddevs.shoppinglisttestingyt.R
+import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
 import com.androiddevs.shoppinglisttestingyt.launchFragmentInHiltContainer
+import com.androiddevs.shoppinglisttestingyt.repositories.FakeShoppingRepositoryAndroidTest
+import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,5 +46,31 @@ class AddShoppingItemFragmentTest {
         pressBack()
 
         verify(navController).popBackStack()
+    }
+
+    @Test
+    fun clickShoppingImage_navigateToImagePickFragment() {
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+
+        onView(withId(R.id.ivShoppingImage)).perform(click())
+        verify(navController.navigate(AddShoppingItemFragmentDirections.actionAddShoppingItemFragmentToImagePickFragment()))
+    }
+
+    @Test
+    fun pressBackButton_imageUrlIsEmpty() {
+        var fakeViewModel = ShoppingViewModel(FakeShoppingRepositoryAndroidTest())
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+            Navigation.setViewNavController(requireView(), navController)
+            viewModel = fakeViewModel
+        }
+        pressBack()
+        Truth.assertThat(fakeViewModel.curImageUrl.getOrAwaitValue()).isEqualTo("")
+
     }
 }
